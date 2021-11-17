@@ -7,7 +7,10 @@
 # UserParameter=vbr[*],powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Program Files\Zabbix Agent\scripts\zabbix_vbr_job.ps1" "$1"
 
 # Configure sqlquery function with user/pass (line 75-76), create user/pass in sql server and reader rights , permit to connect with local user in sql settings.
-$veeamserver = 'veeam.contoso.local'
+$veeamserver = 'localhost'
+
+$zabbixsender = 'C:\\Program Files\\Zabbix Agent\\zabbix_sender.exe'
+$zabbixagentdconf = 'C:\\ProgramData\\zabbix\\zabbix_agentd.conf'
 
 $ITEM = [string]$args[0]
 
@@ -71,7 +74,7 @@ function QuerySql
 		[System.String]$Command
 	)
 	
-	$SQLServer = $veeamserver
+	$SQLServer = 'backup1-1\\veeamsql2016'
 	$uid = 'zabbixveeamuser'
 	$pwd = 'CHANGE ME'
 	$date = get-date -format 'dd/MM/yyyy'
@@ -83,7 +86,7 @@ function QuerySql
 	$connectionString = "Server = $SQLServer; User ID = $uid; Password = $pwd;"
 	
 	# If integrated authentication
-	#$connectionString = "Server = $SQLServer; Integrated Security = True;"
+	$connectionString = "Server = $SQLServer; Integrated Security = True;"
 	
 	$connection = New-Object System.Data.SqlClient.SqlConnection
 	$connection.ConnectionString = $connectionString
@@ -194,7 +197,7 @@ switch ($ITEM)
 		$Return = $Return -replace '"', '\"'
 		$Return = '\"' + $return + '\"'
 		
-		.\zabbix_sender.exe -c .\zabbix_agentd.conf -k ResultsBackup -o $Return
+		& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k ResultsBackup -o $Return
 		
 		## Result BackupSync
 		$query = $BackupJobs | Where-Object { $_.Schedule_Enabled -like "true" -and $_.Type -like "51" }
@@ -242,7 +245,7 @@ switch ($ITEM)
 		$Return = $Return -replace 'à', '&aacute;'
 		$Return = $Return -replace '"', '"""'
 		
-		.\zabbix_sender.exe -c .\zabbix_agentd.conf -k ResultsBackupSync -o $Return
+		& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k ResultsBackupSync -o $Return
 		
 		## Result TapeBackup
 		$query = $BackupJobs | Where-Object { $_.Schedule_Enabled -like "true" -and $_.Type -like "28" }
@@ -292,7 +295,7 @@ switch ($ITEM)
 		
 		if ($Return)
 		{
-			.\zabbix_sender.exe -c .\zabbix_agentd.conf -k ResultsBackupTape -o $Return
+			& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k ResultsBackupTape -o $Return
 		}
 		
 		##ResultsRepository
@@ -315,7 +318,7 @@ switch ($ITEM)
 		$Return = ConvertTo-Json -Compress -InputObject @($return)
 		$Return = $Return -replace '"', '""'
 		
-		.\zabbix_sender.exe -c .\zabbix_agentd.conf -k RepoInfo -o $return
+		& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k RepoInfo -o $return
 	}
 	
 	"TotalJob" {
