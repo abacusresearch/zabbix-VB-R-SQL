@@ -9,8 +9,8 @@
 # Configure sqlquery function with user/pass (line 75-76), create user/pass in sql server and reader rights , permit to connect with local user in sql settings.
 $veeamserver = 'localhost'
 
-$zabbixsender = 'C:\\Program Files\\Zabbix Agent\\zabbix_sender.exe'
-$zabbixagentdconf = 'C:\\ProgramData\\zabbix\\zabbix_agentd.conf'
+$zabbixsender = 'C:\Program Files\Zabbix Agent\zabbix_sender.exe'
+$zabbixagentdconf = 'C:\ProgramData\zabbix\zabbix_agentd.conf'
 
 $ITEM = [string]$args[0]
 
