@@ -305,24 +305,24 @@ switch ($ITEM)
 		}
 		
 		##ResultsRepository
-		$query = Get-CimInstance -Class Repository -ComputerName $veeamserver -Namespace ROOT\VeeamBS | Select-Object @{ N = "REPONAME"; E = { $_.NAME } }
-		
-		$return = $null
-		$return = @()
-		
-		foreach ($item in $query)
-		{
-			$Result = Get-CimInstance -Class Repository -ComputerName $veeamserver -Namespace ROOT\VeeamBS | Where-Object { $_.Name -eq $item.REPONAME }
-			$Object = $null
-			$Object = New-Object System.Object
-			$Object | Add-Member -type NoteProperty -Name REPONAME -Value $item.REPONAME
-			$Object | Add-Member -type NoteProperty -Name REPOCAPACITY -Value ($Result | Select-Object -ExpandProperty Capacity)
-			$Object | Add-Member -type NoteProperty -Name REPOFREE -Value ($Result | Select-Object -ExpandProperty FreeSpace)
-			$Return += $Object
-		}
-		cd 'C:\Program Files\Zabbix Agent'
-		$Return = ConvertTo-Json -Compress -InputObject @($return)
-		$Return = $Return -replace '"', '""'
+		### $query = Get-CimInstance -Class Repository -ComputerName $veeamserver -Namespace ROOT\VeeamBS | Select-Object @{ N = "REPONAME"; E = { $_.NAME } }
+		### 
+		### $return = $null
+		### $return = @()
+		### 
+		### foreach ($item in $query)
+		### {
+		### 	$Result = Get-CimInstance -Class Repository -ComputerName $veeamserver -Namespace ROOT\VeeamBS | Where-Object { $_.Name -eq $item.REPONAME }
+		### 	$Object = $null
+		### 	$Object = New-Object System.Object
+		### 	$Object | Add-Member -type NoteProperty -Name REPONAME -Value $item.REPONAME
+		### 	$Object | Add-Member -type NoteProperty -Name REPOCAPACITY -Value ($Result | Select-Object -ExpandProperty Capacity)
+		### 	$Object | Add-Member -type NoteProperty -Name REPOFREE -Value ($Result | Select-Object -ExpandProperty FreeSpace)
+		### 	$Return += $Object
+		### }
+		### cd 'C:\Program Files\Zabbix Agent'
+		### $Return = ConvertTo-Json -Compress -InputObject @($return)
+		### $Return = $Return -replace '"', '""'
 		
 		& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k RepoInfo -o $return | Out-Null
 	}
