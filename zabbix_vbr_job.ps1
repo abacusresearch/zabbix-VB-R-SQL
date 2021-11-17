@@ -74,7 +74,7 @@ function QuerySql
 		[System.String]$Command
 	)
 	
-	$SQLServer = 'backup1-1\\veeamsql2016'
+	$SQLServer = 'backup1-1\veeamsql2016'
 	$uid = 'zabbixveeamuser'
 	$pwd = 'CHANGE ME'
 	$date = get-date -format 'dd/MM/yyyy'
