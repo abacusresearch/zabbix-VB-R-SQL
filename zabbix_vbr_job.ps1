@@ -203,7 +203,7 @@ switch ($ITEM)
 		$Return = $Return -replace '"', '\"'
 		$Return = '\"' + $return + '\"'
 		
-		& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k ResultsBackup -o $Return | Out-Null
+		& $zabbixsender -c $zabbixagentdconf -s $veeamserver -k ResultsBackup -o $Return | Out-Null
 		
 		## Result BackupSync
 		$query = $BackupJobs | Where-Object { $_.Schedule_Enabled -like "true" -and $_.Type -like "51" }
@@ -251,7 +251,7 @@ switch ($ITEM)
 		$Return = $Return -replace 'à', '&aacute;'
 		$Return = $Return -replace '"', '"""'
 		
-		& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k ResultsBackupSync -o $Return | Out-Null
+		& $zabbixsender -c $zabbixagentdconf -s $veeamserver -k ResultsBackupSync -o $Return | Out-Null
 		
 		## Result TapeBackup
 		$query = $BackupJobs | Where-Object { $_.Schedule_Enabled -like "true" -and $_.Type -like "28" }
@@ -301,7 +301,7 @@ switch ($ITEM)
 		
 		if ($Return)
 		{
-			& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k ResultsBackupTape -o $Return | Out-Null
+			& $zabbixsender -c $zabbixagentdconf -s $veeamserver -k ResultsBackupTape -o $Return | Out-Null
 		}
 		
 		##ResultsRepository
@@ -324,7 +324,7 @@ switch ($ITEM)
 		### $Return = ConvertTo-Json -Compress -InputObject @($return)
 		### $Return = $Return -replace '"', '""'
 		
-		& $zabbixsender -c $zabbixagentdconf -s backup1-1.infra.wtb1.ch.abainfra.net -k RepoInfo -o $return | Out-Null
+		& $zabbixsender -c $zabbixagentdconf -s $veeamserver -k RepoInfo -o $return | Out-Null
 	}
 	
 	"TotalJob" {
